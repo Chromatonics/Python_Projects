@@ -1,12 +1,33 @@
 
+
 from tkinter import *
+import tkinter as tk
 import glob
 import os
 import datetime
 import shutil
+ 
+win = tk.Tk() 
+ 
 
-root = Tk() 
-root.geometry('200x100') 
+
+def origin():
+    flist = os.listdir('C:/Users/Andrew Smith/Desktop/Folder_Ori/')    
+    lbox = tk.Listbox(win)
+    lbox.pack()
+
+    for item in flist:
+        lbox.insert(tk.END, item)
+        
+
+def destination():
+    slist = os.listdir('C:/Users/Andrew Smith/Desktop/Folder_Dest/')    
+    lbox = tk.Listbox(win)
+    lbox.pack()
+
+    for item in slist:
+        lbox.insert(tk.END, item)
+
   
 
 def fileTran():
@@ -31,12 +52,20 @@ def fileTran():
 
         if modifyDateLimit > todaysDate:
             shutil.copy2(file, destinationPath + filename)
-   
 
 
 
-btn_Tran = Button(root, text ='Transfer', command =fileTran()) 
-btn_Tran.grid(row = 1, column = 1, pady = 10)
+
+btn_Ori = Button(win, text ='Origin', command =origin) 
+btn_Ori.pack()
+
+btn_Des = Button(win, text ='Destination', command =destination) 
+btn_Des.pack()
+
+btn_Tran = Button(win, text ='Transfer', command =fileTran) 
+btn_Tran.pack()
+    
+
 
 
 
