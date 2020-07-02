@@ -1,74 +1,69 @@
 
-
 from tkinter import *
 import tkinter as tk
 import glob
 import os
 import datetime
 import shutil
- 
-win = tk.Tk() 
- 
+import tkinter.filedialog
+
+class TransferGUI:
+    def __init__(self, master):
+        self.master = master
+        master.title("GUI")
+
+        self.label = Label(master, text="File Transfer")
+        self.label.pack()
+
+        self.greet_button = Button(master, text="Origin", command=self.origin)
+        self.greet_button.pack()
+
+        self.close_button = Button(master, text="Destination", command=self.destination)
+        self.close_button.pack()
+
+        self.btn_Tran = Button(master, text ="Transfer", command =self.fileTran) 
+        self.btn_Tran.pack()
 
 
-def origin():
-    flist = os.listdir('C:/Users/Andrew Smith/Desktop/Folder_Ori/')    
-    lbox = tk.Listbox(win)
-    lbox.pack()
+    def origin(self):
+        self.flist = tkinter.filedialog.askdirectory()
+        self.flist2 = self.flist + '/'
 
-    for item in flist:
-        lbox.insert(tk.END, item)
+
+    def destination(self):
+        self.slist = tkinter.filedialog.askdirectory()
+        self.slist2 = self.slist + '/'
+
+
+    def fileTran(self):
+
+        originPath = self.flist2
+        destinationPath = self.slist2
+        fileType = ".txt"
+
+        def GetFileList(path, type):
+            return glob.glob(path + "*" + type)
+        fileList = GetFileList(originPath, fileType)
+
+        for file in fileList:
+            modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
+            todaysDate = datetime.datetime.today()
         
+            filePathList = file.split("\\")
+            filename = filePathList[-1]
+        
+            modifyDateLimit = modifyDate + datetime.timedelta(days=1)
 
-def destination():
-    slist = os.listdir('C:/Users/Andrew Smith/Desktop/Folder_Dest/')    
-    lbox = tk.Listbox(win)
-    lbox.pack()
-
-    for item in slist:
-        lbox.insert(tk.END, item)
-
-  
-
-def fileTran():
-    def GetFileList(path, type):
-        return glob.glob(path + "*" + type)
-
-    originPath = 'C:/Users/Andrew Smith/Desktop/Folder_Ori/'
-    destinationPath = 'C:/Users/Andrew Smith/Desktop/Folder_Dest/'
-    fileType = ".txt"
-
-
-    fileList = GetFileList(originPath, fileType)
-
-    for file in fileList:
-        modifyDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
-        todaysDate = datetime.datetime.today()
-    
-        filePathList = file.split("\\")
-        filename = filePathList[-1]
-    
-        modifyDateLimit = modifyDate + datetime.timedelta(days=1)
-
-        if modifyDateLimit > todaysDate:
-            shutil.copy2(file, destinationPath + filename)
-
-
-
-
-btn_Ori = Button(win, text ='Origin', command =origin) 
-btn_Ori.pack()
-
-btn_Des = Button(win, text ='Destination', command =destination) 
-btn_Des.pack()
-
-btn_Tran = Button(win, text ='Transfer', command =fileTran) 
-btn_Tran.pack()
-    
+            if modifyDateLimit > todaysDate:
+                shutil.copy2(file, destinationPath + filename)
 
 
 
 
 
-if __name__=='__main__':  
-    mainloop()
+
+
+
+root = Tk()
+my_gui = TransferGUI(root)
+root.mainloop()
